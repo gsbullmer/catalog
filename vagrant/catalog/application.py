@@ -27,20 +27,49 @@ session = DBSession()
 def showCategories():
     categories = session.query(Category).order_by('name').all()
 
-    return "categories"
+    output = ""
+    for c in categories:
+        output += c.name
+        output += "</br>"
+
+    return output
 
 @app.route('/category/<slug>/')
 def showGames(slug):
-    category = session.query(Category).filter_by(slug = slug).first()
-    games = session.query(Game).filter_by(categories = category).order_by('name').all()
+    category = session.query(Category).filter_by(slug = slug).one()
 
-    return "games"
+    output = ""
+    for g in category.games:
+        output += g.name
+        output += "</br>"
+
+    return output
 
 @app.route('/game/<int:game_id>/')
 def showGameDetails(game_id):
-    game = session.query(Game).filter_by(id = game_id).first()
+    game = session.query(Game).filter_by(id = game_id).one()
 
-    return "game"
+    output = ""
+    output += "<img src=\"%s\">" % game.picture
+    output += "</br>"
+    output += game.name
+    output += "</br>"
+    if game.min_players == game.max_players:
+        output += game.min_players
+    elif game.max_players == 0:
+        output += "%s+" % game.min_players
+    else:
+        output += "%s - %s" % (game.min_players, game.max_players)
+    output += "</br>"
+    output += game.description
+    output += "</br>"
+    for c in game.categories:
+        output += c.name
+        output += "\n"
+    output += "</br>"
+    output += game.user.name
+
+    return output
 
 
 if __name__ == '__main__':
