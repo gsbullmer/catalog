@@ -7,7 +7,6 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 
-# Association table for Category/Game relationships
 categories_games_table = Table('categories_games', Base.metadata,
     Column('category_id', Integer, ForeignKey('category.id', ondelete='CASCADE')),
     Column('game_id', Integer, ForeignKey('game.id', ondelete='CASCADE'))
@@ -38,17 +37,14 @@ class Category(Base):
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
     slug = Column(String(80))
-
-    # One to Many relationship
-    user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship("User",
-        backref = backref("categories"))
+    description = Column(String(80))
 
     @property
     def serialize(self):
         return {
             'name': self.name,
             'id': self.id,
+            'description': self.description,
         }
 
 class Game(Base):
@@ -60,15 +56,15 @@ class Game(Base):
     description = Column(String(5000))
     min_players = Column(Integer)
     max_players = Column(Integer)
-    date_added = Column(DateTime)
+    date_modified = Column(DateTime)
     picture = Column(String(250))
 
-    # Many to Many relationship
+    # Many to One relationship
     categories = relationship("Category",
         secondary = "categories_games",
         backref = backref("games"))
 
-    # One to One relationship
+    # Many to One relationship
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User",
         backref = backref("games"))
@@ -83,6 +79,7 @@ class Game(Base):
             'max_players': self.min_players,
             'picture': self.picture,
             'categories': self.categories,
+            'date_modified': self.date_modified,
         }
 
 
