@@ -1,15 +1,16 @@
 import sys
-from sqlalchemy import Table, Column, ForeignKey, Integer, String, Datetime
+from sqlalchemy import Table, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 
 Base = declarative_base()
 
+
 # Association table for Category/Game relationships
 categories_games_table = Table('categories_games', Base.metadata,
-    Column('category_id', Integer, ForeignKey('category.id')),
-    Column('game_id', Integer, ForeignKey('game.id'))
+    Column('category_id', Integer, ForeignKey('category.id', ondelete='CASCADE')),
+    Column('game_id', Integer, ForeignKey('game.id', ondelete='CASCADE'))
 )
 
 class User(Base):
@@ -36,10 +37,12 @@ class Category(Base):
 
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
+    slug = Column(String(80))
 
     # One to Many relationship
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship("User", backref = "categories")
+    user = relationship("User",
+        backref = backref("categories"))
 
     @property
     def serialize(self):
@@ -54,20 +57,21 @@ class Game(Base):
 
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
-    description = Column(String(250))
+    description = Column(String(5000))
     min_players = Column(Integer)
     max_players = Column(Integer)
-    date_added = Column(Datetime)
+    date_added = Column(DateTime)
     picture = Column(String(250))
 
     # Many to Many relationship
     categories = relationship("Category",
         secondary = "categories_games",
-        backref = "games")
+        backref = backref("games"))
 
     # One to One relationship
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship("User", backref = "games")
+    user = relationship("User",
+        backref = backref("games"))
 
     @property
     def serialize(self):

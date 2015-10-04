@@ -8,6 +8,7 @@ pip install requests
 pip install httplib2
 su postgres -c 'createuser -dRS vagrant'
 su vagrant -c 'createdb'
+su vagrant -c 'dropdb catalog'
 su vagrant -c 'createdb catalog'
 # su vagrant -c 'psql forum -f /vagrant/forum/forum.sql'
 
