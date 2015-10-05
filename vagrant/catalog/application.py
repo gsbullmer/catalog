@@ -26,13 +26,9 @@ session = DBSession()
 @app.route('/category/')
 def showCategories():
     categories = session.query(Category).order_by('name').all()
+    recent_games = session.query(Game).order_by("date_modified DESC").limit(10)
 
-    output = ""
-    for c in categories:
-        output += c.name
-        output += "</br>"
-
-    return output
+    return render_template("categories.html", categories = categories, recent_games = recent_games, countGames = countGames)
 
 @app.route('/category/<slug>/')
 def showGames(slug):
@@ -71,6 +67,9 @@ def showGameDetails(game_id):
 
     return output
 
+# Helper functions
+def countGames(gamesList):
+    return len(gamesList)
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
