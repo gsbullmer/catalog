@@ -32,40 +32,17 @@ def showCategories():
 
 @app.route('/category/<slug>/')
 def showGames(slug):
+    categories = session.query(Category).order_by('name').all()
     category = session.query(Category).filter_by(slug = slug).one()
 
-    output = ""
-    for g in category.games:
-        output += g.name
-        output += "</br>"
-
-    return output
+    return render_template("games.html", categories = categories, category = category, countGames = countGames)
 
 @app.route('/game/<int:game_id>/')
 def showGameDetails(game_id):
+    categories = session.query(Category).order_by('name').all()
     game = session.query(Game).filter_by(id = game_id).one()
 
-    output = ""
-    output += "<img src=\"%s\">" % game.picture
-    output += "</br>"
-    output += game.name
-    output += "</br>"
-    if game.min_players == game.max_players:
-        output += game.min_players
-    elif game.max_players == 0:
-        output += "%s+" % game.min_players
-    else:
-        output += "%s - %s" % (game.min_players, game.max_players)
-    output += "</br>"
-    output += game.description
-    output += "</br>"
-    for c in game.categories:
-        output += c.name
-        output += "\n"
-    output += "</br>"
-    output += game.user.name
-
-    return output
+    return render_template('gameDetails.html', categories = categories, game = game, countGames = countGames)
 
 # Helper functions
 def countGames(gamesList):

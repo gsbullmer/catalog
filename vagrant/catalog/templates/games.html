@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h4>{{ category.name }}</h4>
+
+  {% if countGames(category.games) > 0 %}
+
+    {% for g in category.games %}
+      <a href="{{ url_for('showGameDetails', game_id = g.id)}}">{{ g.name }}</a>
+      </br>
+    {% endfor %}
+
+  {% else %}
+    <p>No games in this category.</p>
+  {% endif %}
+
+</div>
+
+{% endblock content %}
+
+{% block footer_scripts %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/foundation/foundation.reveal.js') }}"></script>
+{% endblock footer_scripts %}

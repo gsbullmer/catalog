@@ -1,31 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}
-iBGdb
-{% endblock title %}
-
-{% block content %}
+{% block banner %}
   <div class="text-center">
     <h1>Welcome to the internet Board Game database</h1>
   </div>
+{% endblock banner %}
 
-  <div class="row">
-    <div class="small-12 medium-4 columns">
-      <h4>Categories:</h4>
+{% block content %}
+  <div class="small-12 medium-8 columns">
+    <h4>Recent Games:</h4>
 
-      {% for c in categories %}
-        <h5><a href="{{ url_for('showGames', slug = c.slug) }}"><strong>{{ c.name }}</strong></a> ({{ countGames(c.games) }})</h5>
+    {% for g in recent_games %}
+      <h5><a href="{{ url_for('showGameDetails', game_id = g.id) }}"><strong>{{ g.name }}</strong></a></h5>
 
-      {% endfor %}
-    </div>
-    <div class="small-12 medium-8 columns">
-      <h4>Recent Games:</h4>
-
-      {% for g in recent_games %}
-        <h5><a href="{{ url_for('showGameDetails', game_id = g.id) }}"><strong>{{ g.name }}</strong></a></h5>
-
-      {% endfor %}
-    </div>
+    {% endfor %}
   </div>
 
 {% endblock content %}

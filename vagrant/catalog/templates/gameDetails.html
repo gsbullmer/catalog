@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="small-12 medium-4 columns">
+      <img src="{{ game.picture }}" />
+      </br>
+      <p>
+        <i class="fi-torsos-all"></i>
+        {% if game.min_players == game.max_players %}
+          {{ game.min_players }}
+        {% elif game.max_players == 0 %}
+          {{ game.min_players }}+
+        {% else %}
+          {{ game.min_players }} - {{ game.max_players }}
+        {% endif %}
+      </p>
+      <p>Categories:
+        <ul>
+          {% for c in game.categories %}
+            <li>{{ c.name }}</li>
+          {% endfor %}
+        </ul>
+      </p>
+      <p>Submitted by: {{ game.user.name }}</p>
+    </div>
+    <div class="small-12 medium-8 columns">
+      <h4>{{ game.name }}</h4>
+      <p>{{ game.description }}</p>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block footer_scripts %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/foundation/foundation.reveal.js') }}"></script>
+{% endblock footer_scripts %}
