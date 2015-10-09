@@ -7,6 +7,7 @@ app = Flask(__name__)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Game, User
+from datetime import datetime
 
 # imports for OAuth
 from flask import session as login_session
@@ -61,6 +62,7 @@ def showGameDetails(game_id):
 
 @app.route('/game/new/', methods = ['GET', 'POST'])
 def newGame():
+    categories = session.query(Category).order_by('name').all()
     if request.method == 'POST':
         newGame = Game(
             name = request.form['name'],
@@ -68,36 +70,48 @@ def newGame():
             picture = request.form['picture'],
             min_players = request.form['min_players'],
             max_players = request.form['max_players'],
-            categories = request.form['categories'],
-            date_modified = DateTime.datetime.today(),
-            user = getUser(login_session['user_id'])
+            date_modified = datetime.today()
+            # user = getUser(login_session['user_id'])
         )
+        for c in request.form.getlist('category'):
+            print c
+            newGame.categories.append(getCategory(c))
+
         session.add(newGame)
         session.commit()
         flash("%s Created" % newGame.name)
-        game = session.query(Game).order_by('id DESC').one()
+        game = session.query(Game).order_by('id DESC').first()
         return redirect(url_for('showGameDetails', game_id = game.id))
     else:
-        return render_template("newGame.html")
+        return render_template("newGame.html", categories = categories)
 
 @app.route('/game/<int:game_id>/edit/', methods = ['GET', 'POST'])
 def editGame(game_id):
     game = session.query(Game).filter_by(id = game_id).one()
+    categories = session.query(Category).order_by('name').all()
     if request.method == 'POST':
+        for c in categories:
+            if c in game.categories:
+                game.categories.remove()
+
         game.name = request.form['name'],
         game.description = request.form['description'],
         game.picture = request.form['picture'],
         game.min_players = request.form['min_players'],
         game.max_players = request.form['max_players'],
-        game.categories = request.form['categories'],
-        game.date_modified = DateTime.datetime.today(),
+        game.date_modified = datetime.today(),
         game.user = getUser(login_session['user_id'])
+
+        for c in request.form.getlist('category'):
+            print c
+            game.categories.append(getCategory(c))
+
         session.add(game)
         session.commit()
         flash("%s Created" % request.form['name'])
         return redirect(url_for('showGameDetails', game_id = game.id))
     else:
-        return render_template("editGame.html")
+        return render_template("editGame.html", categories = categories)
 
 @app.route('/game/<int:game_id>/delete/', methods = ['GET', 'POST'])
 def deleteGame(game_id):
@@ -123,6 +137,10 @@ def showLogin():
 # Helper functions
 def countGames(gamesList):
     return len(gamesList)
+
+def getCategory(slug):
+    category = session.query(Category).filter_by(slug = slug).one()
+    return category
 
 def getUserID(email):
     try:

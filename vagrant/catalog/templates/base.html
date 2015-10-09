@@ -31,8 +31,9 @@
           <!-- Right Nav Section -->
           <ul class="right">
             {% if 'username' not in session %}
-              <li><a href="#" data-reveal-id="loginModal" data-reveal-ajax="true"><i class="fi-torso"></i> Login</a></li>
+              <li><a href="{{ url_for('showLogin') }}" data-reveal-id="loginModal" data-reveal-ajax="true"><i class="fi-torso"></i> Login</a></li>
             {% else %}
+              <li><a href="{{ url_for('newGame') }}"><i class="fi-plus"></i> Add Game</a></li>
               <li><a href="#"><i class="fi-torso"></i> Logout</a></li>
             {% endif %}
           </ul>
@@ -42,9 +43,9 @@
 
     <div id="formModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
 
-    <div id="deleteModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
+    <div id="deleteModal" class="reveal-modal tiny" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
 
-    <div id="loginModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
+    <div id="loginModal" class="reveal-modal tiny" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
 
     <div class="row">
       <div class="small-12 columns">
@@ -60,7 +61,7 @@
 
                 <div data-alert class="alert-box success radius">
                   {{ message }}
-                  <a href="#" class="close">&times</a>
+                  <a href="#" class="close"><i class="fi-x"></i></a>
                 </div>
 
               {% endfor %}
@@ -97,6 +98,8 @@
       <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
       <script src="{{ url_for('static', filename='js/foundation/foundation.js') }}"></script>
       <script src="{{ url_for('static', filename='js/foundation/foundation.tooltip.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/foundation/foundation.reveal.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/foundation/foundation.topbar.js') }}"></script>
     {% endblock footer_scripts %}
     <script>
       $(document).foundation({
