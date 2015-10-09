@@ -27,9 +27,15 @@
         {% endfor %}
       </ul>
 
-      <i class="fi-torso"></i> Submitted by:
-      <br/>
-      {{ game.user.name }}
+      {% if current_user.id == game.user_id %}
+        <a href="{{ url_for('editGame', game_id = game.id) }}" class="button small radius expand" data-reveal-id="formModal" data-reveal-ajax="true">Edit</a>
+        <br/>
+        <a href="{{ url_for('deleteGame', game_id = game.id) }}" class="button small radius expand" data-reveal-id="deleteModal" data-reveal-ajax="true">Delete</a>
+      {% else %}
+        <i class="fi-torso"></i> Submitted by:
+        <br/>
+        {{ game.user.name }}
+      {% endif %}
     </div>
     <div class="small-12 medium-8 columns">
       <h4>{{ game.name }}</h4>

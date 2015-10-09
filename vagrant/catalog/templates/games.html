@@ -19,6 +19,8 @@
     <p>No games in this category.</p>
   {% endif %}
 
+  <a href="{{ url_for('newGame') }}" class="button small radius expand" data-reveal-id="formModal" data-reveal-ajax="true">Create New Game</a>
+
 </div>
 
 {% endblock content %}

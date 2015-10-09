@@ -28,25 +28,98 @@ def showCategories():
     categories = session.query(Category).order_by('name').all()
     recent_games = session.query(Game).order_by("date_modified DESC").limit(10)
 
-    return render_template("categories.html", categories = categories, recent_games = recent_games, countGames = countGames)
+    if 'user_id' not in login_session:
+        current_user = None
+    else:
+        current_user = getUserInfo(login_session['user_id'])
+
+    return render_template("categories.html", categories = categories, recent_games = recent_games, current_user = current_user, countGames = countGames)
 
 @app.route('/category/<slug>/')
 def showGames(slug):
     categories = session.query(Category).order_by('name').all()
     category = session.query(Category).filter_by(slug = slug).one()
 
-    return render_template("games.html", categories = categories, category = category, countGames = countGames)
+    if 'user_id' not in login_session:
+        current_user = None
+    else:
+        current_user = getUserInfo(login_session['user_id'])
+
+    return render_template("games.html", categories = categories, category = category, current_user = current_user, countGames = countGames)
 
 @app.route('/game/<int:game_id>/')
 def showGameDetails(game_id):
     categories = session.query(Category).order_by('name').all()
     game = session.query(Game).filter_by(id = game_id).one()
 
-    return render_template('gameDetails.html', categories = categories, game = game, countGames = countGames)
+    if 'user_id' not in login_session:
+        current_user = None
+    else:
+        current_user = getUserInfo(login_session['user_id'])
+
+    return render_template('gameDetails.html', categories = categories, game = game, current_user = current_user, countGames = countGames)
+
+@app.route('/game/new', methods = ['GET', 'POST'])
+def newGame():
+    if request.method == 'POST':
+        newGame = Game(
+            name = request.form['name'],
+            description = request.form['name'],
+            picture = request.form['name'],
+            min_players = request.form['name'],
+            max_players = request.form['name'],
+            categories = request.form['name'],
+            date_modified = DateTime.datetime.today(),
+            user = getUser(login_session['user_id'])
+        )
+        session.add(newGame)
+        session.commit()
+        flash("%s Created" % request.form['name'])
+        return redirect(url_for('showGameDetails', game_id = newGame.id))
+    else:
+        return render_template("newGame.html")
+
+@app.route('/game/<int:game_id>/edit', methods = ['GET', 'POST'])
+def editGame(game_id):
+    return None
+
+@app.route('/game/<int:game_id>/delete', methods = ['GET', 'POST'])
+def deleteGame(game_id):
+    return None
+
+@app.route('/login')
+def showLogin():
+    state = "".join(random.choice(string.ascii_uppercase + string.digits)
+        for x in xrange(32))
+    login_session['state'] = state
+    return render_template("login.html", STATE = state)
 
 # Helper functions
 def countGames(gamesList):
     return len(gamesList)
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email = email).one()
+        return user.id
+    except:
+        return None
+
+def getUser(user_id):
+    user = session.query(User).filter_by(id = user_id).one()
+    return Null
+
+def createUser(login_session):
+    newUser = User(
+        name = login_session['username'],
+        email = login_session['email'],
+        picture = login_session['picture']
+    )
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email = login_session['email']).one()
+    return user.id
+
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
