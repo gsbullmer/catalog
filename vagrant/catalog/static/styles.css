@@ -1,0 +1,6 @@
+.side-nav li a:not(.button) {
+    color: #008CBA;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
