@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  <form action="{{ url_for('newGame') }}" method="post">
+  <form action="{{ url_for('newGame') }}" method="POST">
 
     <div class="row">
       <div class="small-12 columns text-center">
@@ -20,8 +20,8 @@
         </label>
       </div>
       <div class="small-12 medium-4 columns">
-        <label>Price
-          <input type="text" size="30" name="price">
+        <label>Picture
+          <input type="text" size="30" name="picture">
         </label>
       </div>
     </div>
@@ -35,9 +35,14 @@
     </div>
 
     <div class="row">
-      <div class="small-12 columns">
-        <label>Course
-          <input type="text" size=30 name="course">
+      <div class="small-12 medium-4 columns">
+        <label>Minimum Players
+          <input type="text" size=30 name="min_players">
+        </label>
+      </div>
+      <div class="small-12 medium-4 columns">
+        <label>Maximum Players <span data-tooltip aria-haspopup="true" class="has-tip" title="Enter &quot;0&quot; for unlimited players."><i class="fi-info"></i></span>
+          <input type="text" size=30 name="min_players">
         </label>
       </div>
     </div>

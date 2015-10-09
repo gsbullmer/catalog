@@ -59,35 +59,61 @@ def showGameDetails(game_id):
 
     return render_template('gameDetails.html', categories = categories, game = game, current_user = current_user, countGames = countGames)
 
-@app.route('/game/new', methods = ['GET', 'POST'])
+@app.route('/game/new/', methods = ['GET', 'POST'])
 def newGame():
     if request.method == 'POST':
         newGame = Game(
             name = request.form['name'],
-            description = request.form['name'],
-            picture = request.form['name'],
-            min_players = request.form['name'],
-            max_players = request.form['name'],
-            categories = request.form['name'],
+            description = request.form['description'],
+            picture = request.form['picture'],
+            min_players = request.form['min_players'],
+            max_players = request.form['max_players'],
+            categories = request.form['categories'],
             date_modified = DateTime.datetime.today(),
             user = getUser(login_session['user_id'])
         )
         session.add(newGame)
         session.commit()
-        flash("%s Created" % request.form['name'])
-        return redirect(url_for('showGameDetails', game_id = newGame.id))
+        flash("%s Created" % newGame.name)
+        game = session.query(Game).order_by('id DESC').one()
+        return redirect(url_for('showGameDetails', game_id = game.id))
     else:
         return render_template("newGame.html")
 
-@app.route('/game/<int:game_id>/edit', methods = ['GET', 'POST'])
+@app.route('/game/<int:game_id>/edit/', methods = ['GET', 'POST'])
 def editGame(game_id):
-    return None
+    game = session.query(Game).filter_by(id = game_id).one()
+    if request.method == 'POST':
+        game.name = request.form['name'],
+        game.description = request.form['description'],
+        game.picture = request.form['picture'],
+        game.min_players = request.form['min_players'],
+        game.max_players = request.form['max_players'],
+        game.categories = request.form['categories'],
+        game.date_modified = DateTime.datetime.today(),
+        game.user = getUser(login_session['user_id'])
+        session.add(game)
+        session.commit()
+        flash("%s Created" % request.form['name'])
+        return redirect(url_for('showGameDetails', game_id = game.id))
+    else:
+        return render_template("editGame.html")
 
-@app.route('/game/<int:game_id>/delete', methods = ['GET', 'POST'])
+@app.route('/game/<int:game_id>/delete/', methods = ['GET', 'POST'])
 def deleteGame(game_id):
-    return None
+    game = session.query(Game).filter_by(id = game_id).one()
+    if login_session['user_id'] != game.user_id:
+        flash("You don't have permission to modify this game.")
+        return redirect(url_for('showGameDetails', game_id = game_id))
+    if request.method == 'POST':
+        session.delete(game)
+        session.commit()
+        flash("%s deleted" % game.name)
+        return redirect(url_for('showCategories'))
+    else:
+        return render_template("deleteGame.html", game_id = game_id)
 
-@app.route('/login')
+@app.route('/login/')
 def showLogin():
     state = "".join(random.choice(string.ascii_uppercase + string.digits)
         for x in xrange(32))
