@@ -17,7 +17,8 @@ import httplib2, json, requests
 from flask import make_response
 
 CLIENT_ID = json.loads(
-    open('static/secrets/client_secrets.json', 'r').read())['web']['client_id']
+    open('static/secrets/client_secrets.json',
+    'r').read())['web']['client_id']
 APPLICATION_NAME = "iBGdb"
 
 # Create session and connect to DB
@@ -201,11 +202,11 @@ def gconnect():
     if stored_credentials is not None and gplus_id == stored_gplus_id:
         response = make_response(json.dumps("Current user is already connected"), 200)
         response.headers['Content-Type'] = 'application/json'
-        # return response
+        return response
 
     # Store the access token in the session for later use
     login_session['provider'] = 'google'
-    login_session['credentials'] = credentials.to_json()
+    login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
     # Get user info
@@ -218,20 +219,27 @@ def gconnect():
     login_session['picture'] = data["picture"]
     login_session['email'] = data["email"]
 
+    # Check to see if User is already in the database
+    newUser = None
     user_id = getUserID(login_session['email'])
     if not user_id:
+        newUser = True
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
 
     output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    output += '<div class="small-4 columns text-right">'
+    output += '<img src="%s" style = "width: 150px; height: 150px;border-radius: 75px;-webkit-border-radius: 75px;-moz-border-radius: 75px;"> ' % login_session['picture']
+    output += '</div>'
+    output += '<div class="small-8 columns text-left">'
+    if newUser:
+        output += '<h4>Welcome, %s!</h4>' % login_session['username']
+    else:
+        output += '<h4>Welcome back, %s!</h4>' % login_session['username']
+    output += '<h6>We\'re sure glad you\'re here!'
+    output += '</div>'
+    flash("Successfully logged in as %s." % login_session['username'])
     print "done!"
     return output
 
@@ -239,13 +247,12 @@ def gconnect():
 @app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user
-    credentials = login_session.get('credentials')
-    if credentials is None:
+    access_token = login_session.get('access_token')
+    if access_token is None:
         response = make_response(
             json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    access_token = credentials.access_token
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
@@ -269,9 +276,11 @@ def fbconnect():
         return response
     access_token = request.data
 
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_echange_token=%s' % (app_id, app_secret, access_token)
+    app_id = json.loads(open('static/secrets/fb_client_secrets.json',
+        'r').read())['web']['app_id']
+    app_secret = json.loads(open('static/secrets/fb_client_secrets.json',
+        'r').read())['web']['app_secret']
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, "GET")[1]
 
@@ -295,20 +304,27 @@ def fbconnect():
     data = json.loads(result)
     login_session['picture'] = data["data"]["url"]
 
+    # Check to see if User is already in the database
+    newUser = None
     user_id = getUserID(login_session['email'])
     if not user_id:
+        newUser = True
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
 
     output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
+    output += '<div class="small-4 columns text-right">'
+    output += '<img src="%s" style = "width: 150px; height: 150px;border-radius: 75px;-webkit-border-radius: 75px;-moz-border-radius: 75px;"> ' % login_session['picture']
+    output += '</div>'
+    output += '<div class="small-8 columns text-left">'
+    if newUser:
+        output += '<h4>Welcome, %s!</h4>' % login_session['username']
+    else:
+        output += '<h4>Welcome back, %s!</h4>' % login_session['username']
+    output += '<h6>We\'re sure glad you\'re here!'
+    output += '</div>'
+    flash("Successfully logged in as %s." % login_session['username'])
     print "done!"
     return output
 
@@ -326,7 +342,7 @@ def disconnect():
         if login_session['provider'] == 'google':
             gdisconnect()
             del login_session['gplus_id']
-            del login_session['credentials']
+            del login_session['access_token']
         if login_session['provider'] == 'facebook':
             fbdisconnect()
             del login_session['facebook_id']
@@ -338,10 +354,10 @@ def disconnect():
         del login_session['provider']
 
         flash("You have successfully been logged out.")
-        return redirect(url_for('showCategory'))
+        return redirect(url_for('showCategories'))
     else:
         flash("You were not logged in to begin with!")
-        return redirect(url_for('showCategory'))
+        return redirect(url_for('showCategories'))
 
 # Helper functions
 def countGames(gamesList):
