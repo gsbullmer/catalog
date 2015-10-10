@@ -33,7 +33,7 @@
             {% if 'username' not in session %}
               <li><a href="{{ url_for('showLogin') }}" data-reveal-id="loginModal" data-reveal-ajax="true"><i class="fi-torso"></i> Login</a></li>
             {% else %}
-              <li><a href="{{ url_for('newGame') }}"><i class="fi-plus"></i> Add Game</a></li>
+              <li><a href="{{ url_for('newGame') }}" data-reveal-id="formModal" data-reveal-ajax="true"><i class="fi-plus"></i> Add Game</a></li>
               <li><a href="#"><i class="fi-torso"></i> Logout</a></li>
             {% endif %}
           </ul>
@@ -100,6 +100,7 @@
       <script src="{{ url_for('static', filename='js/foundation/foundation.tooltip.js') }}"></script>
       <script src="{{ url_for('static', filename='js/foundation/foundation.reveal.js') }}"></script>
       <script src="{{ url_for('static', filename='js/foundation/foundation.topbar.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/foundation/foundation.abide.js') }}"></script>
     {% endblock footer_scripts %}
     <script>
       $(document).foundation({

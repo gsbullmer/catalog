@@ -66,6 +66,9 @@ def showGameDetails(game_id):
 
 @app.route('/game/new/', methods = ['GET', 'POST'])
 def newGame():
+    if 'username' not in login_session:
+        flash("You must be logged in to do that action.")
+        return redirect(url_for('showCategories'))
     categories = session.query(Category).order_by('name').all()
     if request.method == 'POST':
         newGame = Game(
@@ -91,6 +94,9 @@ def newGame():
 
 @app.route('/game/<int:game_id>/edit/', methods = ['GET', 'POST'])
 def editGame(game_id):
+    if 'username' not in login_session:
+        flash("You must be logged in to do that action.")
+        return redirect(url_for('showCategories'))
     game = session.query(Game).filter_by(id = game_id).one()
     categories = session.query(Category).order_by('name').all()
     if request.method == 'POST':
@@ -119,6 +125,9 @@ def editGame(game_id):
 
 @app.route('/game/<int:game_id>/delete/', methods = ['GET', 'POST'])
 def deleteGame(game_id):
+    if 'username' not in login_session:
+        flash("You must be logged in to do that action.")
+        return redirect(url_for('showCategories'))
     game = session.query(Game).filter_by(id = game_id).one()
     if login_session['user_id'] != game.user_id:
         flash("You don't have permission to modify this game.")
