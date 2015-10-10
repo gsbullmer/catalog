@@ -125,7 +125,7 @@ def deleteGame(game_id):
         flash("%s deleted" % game.name)
         return redirect(url_for('showCategories'))
     else:
-        return render_template("deleteGame.html", game_id = game_id)
+        return render_template("deleteGame.html", game = game)
 
 @app.route('/login/')
 def showLogin():

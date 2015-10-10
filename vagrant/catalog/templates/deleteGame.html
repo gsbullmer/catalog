@@ -2,12 +2,12 @@
 
 {% block content %}
 
-  <form action="{{ url_for('deleteMenuItem', restaurant_id = item.restaurant_id, menu_id = item.id) }}" method="post">
+  <form action="{{ url_for('deleteGame', game_id = game.id) }}" method="post">
 
     <div class="row">
       <div class="small-12 columns text-center">
 
-        <h3>Delete {{ item.name }}?</h3>
+        <h3>Delete {{ game.name }}?</h3>
         <h5 class="subheader">This cannot be undone.</h5>
 
         <ul class="button-group radius even-2">
