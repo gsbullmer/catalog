@@ -437,8 +437,11 @@ def getUserID(email):
         return None
 
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(id = user_id).one()
-    return user
+    try:
+        user = session.query(User).filter_by(id = user_id).one()
+        return User
+    except:
+        return None
 
 def createUser(login_session):
     newUser = User(
