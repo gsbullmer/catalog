@@ -13,7 +13,7 @@
 
   {% for g in recent_games %}
     <li>
-      <a href="{{ url_for('showGameDetails', game_id = g.id) }}">{{ g.name }}</a>
+      <a href="{{ url_for('showGameDetails', game_id = g.id) }}">{{ g.name }}</a> <em><span class="time-passed">({{ fuzzyTime(g.date_modified) }})</span></em>
     </li>
   {% endfor %}
 

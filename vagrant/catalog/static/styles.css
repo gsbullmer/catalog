@@ -12,3 +12,8 @@ body {
 .panel {
   background-color: white;
 }
+
+.time-passed {
+  color: gray;
+  font-size: 0.8rem;
+}

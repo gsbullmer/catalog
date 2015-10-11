@@ -7,7 +7,7 @@ app = Flask(__name__)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Game, User
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # imports for OAuth
 from flask import session as login_session
@@ -39,7 +39,7 @@ def showCategories():
     else:
         current_user = getUserInfo(login_session['user_id'])
 
-    return render_template("categories.html", categories = categories, recent_games = recent_games, current_user = current_user, countGames = countGames)
+    return render_template("categories.html", categories = categories, recent_games = recent_games, current_user = current_user, countGames = countGames, fuzzyTime = fuzzyTime)
 
 @app.route('/category/<slug>/')
 def showGames(slug):
@@ -362,6 +362,38 @@ def disconnect():
 # Helper functions
 def countGames(gamesList):
     return len(gamesList)
+
+def fuzzyTime(date_time):
+    time_diff = datetime.now() - date_time
+    if time_diff >= timedelta(weeks = 52):
+        unit = 'year'
+        diff = time_diff.days // 365
+        string = '%d %s%s' % (diff, unit, "s"[diff == 1:])
+    elif time_diff >= timedelta(days = 30):
+        unit = 'month'
+        diff = time_diff.days // 30
+        string = '%d %s%s' % (diff, unit, "s"[diff == 1:])
+    elif time_diff >= timedelta(weeks = 1):
+        unit = 'week'
+        diff = time_diff.days // 7
+        string = '%d %s%s' % (diff, unit, "s"[diff == 1:])
+    elif time_diff.days:
+        unit = 'day'
+        diff = time_diff.days // 1
+        string = '%d %s%s' % (diff, unit, "s"[diff == 1:])
+    elif time_diff.seconds >= 3600:
+        unit = 'hour'
+        diff = time_diff.total_seconds() // 3600
+        string = '%d %s%s' % (diff, unit, "s"[diff == 1:])
+    elif time_diff.seconds >= 60:
+        unit = 'minute'
+        diff = time_diff.total_seconds() // 60
+        string = '%d %s%s' % (diff, unit, "s"[diff == 1:])
+    else:
+        string = 'moments'
+
+    fuzzy_time = '%s ago' % string
+    return fuzzy_time
 
 def getCategory(slug):
     category = session.query(Category).filter_by(slug = slug).one()
