@@ -9,7 +9,7 @@
       <title>{{ g.name }}</title>
       <link>{{ url_for('showGameDetails', game_id = g.id) }}</link>
       <guid>{{ url_for('showGameDetails', game_id = g.id) }}</guid>
-      <pubDate>{{ g.date_modified.strftime("%a, %d %b %Y %H:%M:%S %Z") }}</pubDate>
+      <pubDate>{{ g.date_modified.strftime("%a, %d %b %Y %H:%M:00 GMT") }}</pubDate>
       <description>{{ g.description }}</description>
     </item>
     {% endfor %}
