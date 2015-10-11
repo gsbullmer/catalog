@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>iBGdb</title>
+    <title>IBGDb</title>
 
     {% block styles %}
       <link rel="stylesheet" href="{{ url_for('static', filename='css/foundation.css') }}" />
@@ -17,29 +17,6 @@
     {% endblock head_scripts %}
   </head>
   <body>
-    <div class="contain-to-grid">
-      <nav class="top-bar" data-topbar role="navigation">
-        <ul class="title-area">
-          <li class="name">
-            <h1><a href="{{ url_for('showCategories') }}">iBGdb</a></h1>
-          </li>
-           <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-          <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-        </ul>
-
-        <section class="top-bar-section">
-          <!-- Right Nav Section -->
-          <ul class="right">
-            {% if 'username' not in session %}
-              <li><a href="{{ url_for('showLogin') }}" data-reveal-id="loginModal" data-reveal-ajax="true"><i class="fi-torso"></i> Login</a></li>
-            {% else %}
-              <li><a href="{{ url_for('newGame') }}" data-reveal-id="formModal" data-reveal-ajax="true"><i class="fi-plus"></i> Add Game</a></li>
-              <li><a href="{{ url_for('disconnect') }}"><i class="fi-torso"></i> Logout</a></li>
-            {% endif %}
-          </ul>
-        </section>
-      </nav>
-    </div>
 
     <div id="formModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog"></div>
 
@@ -49,10 +26,32 @@
 
     <div class="row">
       <div class="small-12 columns">
-        <div class="panel radius">
+        <img src="{{ url_for('static', filename = 'images/banner.jpg') }}">
 
-          {% block banner %}
-          {% endblock banner %}
+        <div class="contain-to-grid">
+          <nav class="top-bar" data-topbar role="navigation">
+            <ul class="title-area">
+              <li class="name"></li>
+              <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+            </ul>
+
+            <section class="top-bar-section">
+              <!-- Right Nav Section -->
+              <ul class="right">
+                {% if 'username' not in session %}
+                  <li><a href="{{ url_for('showLogin') }}" data-reveal-id="loginModal" data-reveal-ajax="true"><i class="fi-torso"></i> Login</a></li>
+                {% else %}
+                  <li><a href="{{ url_for('newGame') }}" data-reveal-id="formModal" data-reveal-ajax="true"><i class="fi-plus"></i> Add Game</a></li>
+                  <li><a href="{{ url_for('disconnect') }}"><i class="fi-torso"></i> Logout</a></li>
+                {% endif %}
+              </ul>
+              <ul class="left">
+                <li><a href="{{ url_for('showCategories') }}"><i class="fi-home"></i> Home</a></li>
+              </ul>
+            </section>
+          </nav>
+        </div>
+        <div class="panel radius">
 
           {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -77,7 +76,7 @@
               <ul class="side-nav">
                 {% for c in categories %}
                   <li>
-                    <a href="{{ url_for('showGames', slug = c.slug) }}"><strong>{{ c.name }}</strong></a> <span class="label">{{ countGames(c.games) }}</span>
+                    <a href="{{ url_for('showGames', slug = c.slug) }}"><strong>{{ c.name }}</strong></a> <span class="label radius">{{ countGames(c.games) }}</span>
                   </li>
                 {% endfor %}
               </ul>
