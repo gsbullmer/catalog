@@ -68,7 +68,7 @@ def showGameDetails(game_id):
 @app.route('/game/new/', methods = ['GET', 'POST'])
 def newGame():
     if 'username' not in login_session:
-        flash("You must be logged in to do that action.")
+        flash("You must be logged in to do that.", "alert")
         return redirect(url_for('showCategories'))
     categories = session.query(Category).order_by('name').all()
     if request.method == 'POST':
@@ -87,7 +87,7 @@ def newGame():
 
         session.add(newGame)
         session.commit()
-        flash("%s Created" % newGame.name)
+        flash("%s Created" % newGame.name, "success")
         game = session.query(Game).order_by('id DESC').first()
         return redirect(url_for('showGameDetails', game_id = game.id))
     else:
@@ -96,10 +96,13 @@ def newGame():
 @app.route('/game/<int:game_id>/edit/', methods = ['GET', 'POST'])
 def editGame(game_id):
     if 'username' not in login_session:
-        flash("You must be logged in to do that action.")
+        flash("You must be logged in to do that.", "alert")
         return redirect(url_for('showCategories'))
     game = session.query(Game).filter_by(id = game_id).one()
     categories = session.query(Category).order_by('name').all()
+    if login_session['user_id'] != game.user_id:
+        flash("You don't have permission to modify this game.", "alert")
+        return redirect(url_for('showGameDetails', game_id = game_id))
     if request.method == 'POST':
         for c in categories:
             if c in game.categories:
@@ -119,7 +122,7 @@ def editGame(game_id):
 
         session.add(game)
         session.commit()
-        flash("%s Created" % request.form['name'])
+        flash("%s Created" % request.form['name'], "success")
         return redirect(url_for('showGameDetails', game_id = game.id))
     else:
         return render_template("editGame.html", categories = categories)
@@ -127,16 +130,16 @@ def editGame(game_id):
 @app.route('/game/<int:game_id>/delete/', methods = ['GET', 'POST'])
 def deleteGame(game_id):
     if 'username' not in login_session:
-        flash("You must be logged in to do that action.")
+        flash("You must be logged in to do that.", "alert")
         return redirect(url_for('showCategories'))
     game = session.query(Game).filter_by(id = game_id).one()
     if login_session['user_id'] != game.user_id:
-        flash("You don't have permission to modify this game.")
+        flash("You don't have permission to delete this game.", "alert")
         return redirect(url_for('showGameDetails', game_id = game_id))
     if request.method == 'POST':
         session.delete(game)
         session.commit()
-        flash("%s deleted" % game.name)
+        flash("%s deleted" % game.name, "success")
         return redirect(url_for('showCategories'))
     else:
         return render_template("deleteGame.html", game = game)
@@ -239,7 +242,8 @@ def gconnect():
         output += '<h4>Welcome back, %s!</h4>' % login_session['username']
     output += '<h6>We\'re sure glad you\'re here!'
     output += '</div>'
-    flash("Successfully logged in as %s." % login_session['username'])
+    flash("Successfully logged in as %s." % login_session['username'],
+    "success")
     print "done!"
     return output
 
@@ -324,7 +328,8 @@ def fbconnect():
         output += '<h4>Welcome back, %s!</h4>' % login_session['username']
     output += '<h6>We\'re sure glad you\'re here!'
     output += '</div>'
-    flash("Successfully logged in as %s." % login_session['username'])
+    flash("Successfully logged in as %s." % login_session['username'],
+    "success")
     print "done!"
     return output
 
@@ -353,10 +358,10 @@ def disconnect():
         del login_session['user_id']
         del login_session['provider']
 
-        flash("You have successfully been logged out.")
+        flash("You have successfully been logged out.", "success")
         return redirect(url_for('showCategories'))
     else:
-        flash("You were not logged in to begin with!")
+        flash("You were not logged in to begin with!", "alert")
         return redirect(url_for('showCategories'))
 
 # Helper functions

@@ -53,12 +53,12 @@
         </div>
         <div class="panel radius">
 
-          {% with messages = get_flashed_messages() %}
+          {% with messages = get_flashed_messages(True) %}
             {% if messages %}
 
-              {% for message in messages %}
+              {% for category, message in messages %}
 
-                <div data-alert class="alert-box success radius">
+                <div data-alert class="alert-box {{ category }} radius">
                   {{ message }}
                   <a href="#" class="close"><i class="fi-x"></i></a>
                 </div>
