@@ -21,15 +21,6 @@ class User(Base):
     email = Column(String(80), nullable = False)
     picture = Column(String(250))
 
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email,
-            'picture': self.picture,
-        }
-
 class Category(Base):
 
     __tablename__ = 'category'
@@ -42,8 +33,8 @@ class Category(Base):
     @property
     def serialize(self):
         return {
-            'name': self.name,
             'id': self.id,
+            'name': self.name,
             'description': self.description,
         }
 
@@ -72,13 +63,13 @@ class Game(Base):
     @property
     def serialize(self):
         return {
+            'id': self.id,
             'name': self.name,
             'description': self.description,
-            'id': self.id,
             'min_players': self.min_players,
             'max_players': self.min_players,
             'picture': self.picture,
-            'categories': self.categories,
+            'categories': [c.serialize for c in self.categories],
             'date_modified': self.date_modified,
         }
 
