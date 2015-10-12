@@ -60,8 +60,7 @@ class Game(Base):
     categories = relationship(
         'Category',
         secondary='categories_games',
-        backref=backref('games', order_by='Game.name')
-    )
+        backref=backref('games', order_by='Game.name'))
 
     # Many to One relationship
     user_id = Column(Integer, ForeignKey('user.id'))

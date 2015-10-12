@@ -90,10 +90,13 @@ def showGameDetails(game_id):
 
 @app.route('/game/new/', methods=['GET', 'POST'])
 def newGame():
+
     if 'username' not in login_session:
         flash('You must be logged in to do that.', 'alert')
         return redirect(url_for('showCategories'))
+
     categories = session.query(Category).order_by('name').all()
+
     if request.method == 'POST':
         newGame = Game(
             name=request.form['name'],
@@ -103,6 +106,7 @@ def newGame():
             max_players=request.form['max_players'],
             date_modified=datetime.now(),
             user=getUserInfo(login_session['user_id']))
+
         for c in request.form.getlist('category'):
             print c
             newGame.categories.append(getCategory(c))
@@ -110,14 +114,13 @@ def newGame():
         session.add(newGame)
         session.commit()
         flash('%s Created' % newGame.name, 'success')
+
         game = session.query(Game).order_by('id DESC').first()
-        return redirect(url_for(
-            'showGameDetails',
-            game_id=game.id))
+
+        return redirect(url_for('showGameDetails', game_id=game.id))
+
     else:
-        return render_template(
-            'newGame.html',
-            categories=categories)
+        return render_template('newGame.html', categories=categories)
 
 
 @app.route('/game/<int:game_id>/edit/', methods=['GET', 'POST'])
@@ -151,9 +154,7 @@ def editGame(game_id):
         flash('%s Created' % request.form['name'], 'success')
         return redirect(url_for('showGameDetails', game_id=game.id))
     else:
-        return render_template(
-            'editGame.html',
-            categories=categories)
+        return render_template('editGame.html', categories=categories)
 
 
 @app.route('/game/<int:game_id>/delete/', methods=['GET', 'POST'])
@@ -255,7 +256,7 @@ def gconnect():
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
         response = make_response(json.dumps(
-            'Token's user ID doesn't match given user ID.'), 401)
+            "Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -499,7 +500,7 @@ def getUserID(email):
 def getUserInfo(user_id):
     try:
         user = session.query(User).filter_by(id=user_id).one()
-        return User
+        return user
     except:
         return None
 
