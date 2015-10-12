@@ -2,51 +2,115 @@
 
 {% block content %}
 
-  <form action="{{ url_for('editMenuItem', restaurant_id = item.restaurant_id, menu_id = item.id) }}" method="post">
+  <script type="text/javascript" language="JavaScript">
+    function checkCheckBoxes(theForm) {
+      for (var i in theForm.category) {
+        if (theForm.category[i].checked) {
+          $('#category-error').css('display', 'none');
+          return true;
+        }
+      }
+      $('#category-error').css('display', 'block');
+      return false;
+    }
+  </script>
+
+  <form action="{{ url_for('editGame', game_id=game.id) }}" method="POST" data-abide onsubmit="return checkCheckBoxes(this);">
 
     <div class="row">
       <div class="small-12 columns text-center">
 
-        <h3>Edit Menu Item</h3>
+        <h3>Update Game</h3>
         <br/>
 
       </div>
     </div>
 
     <div class="row">
-      <div class="small-12 medium-8 columns">
-        <label>Name
-          <input type="text" id="name-label" name="name" value="{{ item.name }}">
-        </label>
-      </div>
-      <div class="small-12 medium-4 columns">
-        <label>Price
-          <input type="text" size="30" name="price" value="{{ item.price }}">
-        </label>
+      <div class="small-12 columns">
+
+        <fieldset>
+          <legend>General Info</legend>
+
+          <div class="name-field">
+            <label>Name
+              <input type="text" id="name-label" name="name" required maxlength="80" value="{{ game.name }}">
+            </label>
+            <small class="error">Required!</small>
+          </div>
+
+          <div class="pic-field">
+            <label>Picture URL
+              <input type="url" name="picture" maxlength="80" value="{{ game.picture }}">
+            </label>
+            <small class="error">Invalid URL</small>
+          </div>
+
+          <div class="description-field">
+            <label>Description
+              <textarea size="5000" name="description" required value="{{ game.description }}"></textarea>
+            </label>
+            <small class="error">Required!</small>
+          </div>
+
+        </fieldset>
       </div>
     </div>
 
     <div class="row">
-      <div class="small-12 columns">
-        <label>Description
-          <textarea size="250" name="description">{{ item.description }}</textarea>
-        </label>
-      </div>
-    </div>
+      <div class="small-12 medium-3 columns">
 
-    <div class="row">
-      <div class="small-12 columns">
-        <label>Course
-          <input type="text" size=30 name="course" value="{{ item.course }}">
-        </label>
+        <fieldset>
+          <legend>Players</legend>
+
+          <div class="min-field">
+            <label>Minimum Players
+              <input type="number" min="1" max="99" name="min_players"  value="{{ game.min_players }}" required>
+            </label>
+            <small class="error">Required!</small>
+          </div>
+
+          <div class="max-field">
+            <label>Maximum Players <span data-tooltip aria-haspopup="true" class="has-tip" title="Enter &quot;0&quot; for unlimited players."><i class="fi-info"></i></span>
+              <input type="number" min="0" max="99" name="max_players" value="{{ game.max_players }}" required>
+            </label>
+            <small class="error">Required!</small>
+          </div>
+
+        </fieldset>
       </div>
+
+      <div class="small-12 medium-9 columns">
+
+        <fieldset>
+          <legend class="error">Categories</legend>
+
+          <div class="row" required>
+            {% for c in categories %}
+            <div class="small-12 medium-6 columns">
+              <label for="{{ c.slug }}">
+                {% if c in game.categories %}
+                  <input id="{{ c.slug }}" type="checkbox" name="category" value="{{ c.slug }}" checked>
+                {% else %}
+                  <input id="{{ c.slug }}" type="checkbox" name="category" value="{{ c.slug }}">
+                {% endif %}
+                {{ c.name }} <span data-tooltip aria-haspopup="true" class="has-tip" title="{{ c.description }}"><i class="fi-info"></i></span>
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+
+        </fieldset>
+        <small id="category-error" class="error">Please select at least one category.</small>
+      </div>
+
     </div>
 
     <div class="row">
       <div class="small-12 columns text-center">
         <div class="small-12 medium-6 medium-offset-3 columns">
           <ul class="button-group radius even-2">
-            <li><button type="submit" class="button small success">Save</button></li>
+            <li><button type="submit" class="button small success">Create</button></li>
             <li><button type="button" class="button small alert" onclick="cancel()">Cancel</button></li>
           </div>
         </ul>

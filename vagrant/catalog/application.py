@@ -169,7 +169,8 @@ def editGame(game_id):
         flash('%s Created' % request.form['name'], 'success')
         return redirect(url_for('showGameDetails', game_id=game.id))
     else:
-        return render_template('editGame.html', categories=categories)
+        return render_template(
+            'editGame.html', game=game, categories=categories)
 
 
 @app.route('/game/<int:game_id>/delete/', methods=['GET', 'POST'])
