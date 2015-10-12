@@ -55,7 +55,11 @@ def showCategories():
 @app.route('/category/<slug>/')
 def showGames(slug):
     categories = session.query(Category).order_by('name').all()
-    category = session.query(Category).filter_by(slug=slug).one()
+    category = session.query(Category).filter_by(slug=slug).first()
+
+    if not category:
+        flash("Sorry, that category doesn't exist.", 'alert')
+        return redirect(url_for('showCategories'))
 
     if 'user_id' not in login_session:
         current_user = None
@@ -73,7 +77,11 @@ def showGames(slug):
 @app.route('/game/<int:game_id>/')
 def showGameDetails(game_id):
     categories = session.query(Category).order_by('name').all()
-    game = session.query(Game).filter_by(id=game_id).one()
+    game = session.query(Game).filter_by(id=game_id).first()
+
+    if not game:
+        flash("Sorry, that game doesn't exist.", 'alert')
+        return redirect(url_for('showCategories'))
 
     if 'user_id' not in login_session:
         current_user = None
@@ -90,7 +98,6 @@ def showGameDetails(game_id):
 
 @app.route('/game/new/', methods=['GET', 'POST'])
 def newGame():
-
     if 'username' not in login_session:
         flash('You must be logged in to do that.', 'alert')
         return redirect(url_for('showCategories'))
@@ -128,11 +135,19 @@ def editGame(game_id):
     if 'username' not in login_session:
         flash('You must be logged in to do that.', 'alert')
         return redirect(url_for('showCategories'))
-    game = session.query(Game).filter_by(id=game_id).one()
+
+    game = session.query(Game).filter_by(id=game_id).first()
+
+    if not game:
+        flash("Sorry, that game doesn't exist.", 'alert')
+        return redirect(url_for('showCategories'))
+
     categories = session.query(Category).order_by('name').all()
+
     if login_session['user_id'] != game.user_id:
         flash("You don't have permission to modify this game.", 'alert')
         return redirect(url_for('showGameDetails', game_id=game_id))
+
     if request.method == 'POST':
         for c in categories:
             if c in game.categories:
@@ -162,10 +177,17 @@ def deleteGame(game_id):
     if 'username' not in login_session:
         flash('You must be logged in to do that.', 'alert')
         return redirect(url_for('showCategories'))
-    game = session.query(Game).filter_by(id=game_id).one()
+
+    game = session.query(Game).filter_by(id=game_id).first()
+
+    if not game:
+        flash("Sorry, that game doesn't exist.", 'alert')
+        return redirect(url_for('showCategories'))
+
     if login_session['user_id'] != game.user_id:
         flash("You don't have permission to delete this game.", 'alert')
         return redirect(url_for('showGameDetails', game_id=game_id))
+
     if request.method == 'POST':
         session.delete(game)
         session.commit()
@@ -184,13 +206,13 @@ def categoriesJSON():
 
 @app.route('/api/category/<slug>/json')
 def categoryJSON(slug):
-    category = session.query(Category).filter_by(slug=slug).one()
+    category = session.query(Category).filter_by(slug=slug).first()
     return jsonify(Category=[g.serialize for g in category.games])
 
 
 @app.route('/api/game/<int:game_id>/json')
 def gameJSON(game_id):
-    game = session.query(Game).filter_by(id=game_id).one()
+    game = session.query(Game).filter_by(id=game_id).first()
     return jsonify(Game=game.serialize)
 
 
