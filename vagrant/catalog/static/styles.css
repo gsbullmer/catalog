@@ -17,3 +17,10 @@ body {
   color: gray;
   font-size: 0.8rem;
 }
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 75px;
+  -webkit-border-radius: 75px;
+  -moz-border-radius: 75px;
+}
