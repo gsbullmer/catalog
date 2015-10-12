@@ -7,26 +7,31 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 
-categories_games_table = Table('categories_games', Base.metadata,
-    Column('category_id', Integer, ForeignKey('category.id', ondelete='CASCADE')),
+categories_games_table = Table(
+    'categories_games',
+    Base.metadata,
+    Column('category_id', Integer, ForeignKey(
+        'category.id', ondelete='CASCADE')),
     Column('game_id', Integer, ForeignKey('game.id', ondelete='CASCADE'))
 )
+
 
 class User(Base):
 
     __tablename__ = 'user'
 
-    id = Column(Integer, primary_key = True)
-    name = Column(String(80), nullable = False)
-    email = Column(String(80), nullable = False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80), nullable=False)
+    email = Column(String(80), nullable=False)
     picture = Column(String(250))
+
 
 class Category(Base):
 
     __tablename__ = 'category'
 
-    name = Column(String(80), nullable = False)
-    id = Column(Integer, primary_key = True)
+    name = Column(String(80), nullable=False)
+    id = Column(Integer, primary_key=True)
     slug = Column(String(80))
     description = Column(String(80))
 
@@ -38,12 +43,13 @@ class Category(Base):
             'description': self.description,
         }
 
+
 class Game(Base):
 
     __tablename__ = 'game'
 
-    name = Column(String(80), nullable = False)
-    id = Column(Integer, primary_key = True)
+    name = Column(String(80), nullable=False)
+    id = Column(Integer, primary_key=True)
     description = Column(String(5000))
     min_players = Column(Integer)
     max_players = Column(Integer)
@@ -51,14 +57,15 @@ class Game(Base):
     picture = Column(String(250))
 
     # Many to One relationship
-    categories = relationship("Category",
-        secondary = "categories_games",
-        backref = backref("games", order_by = "Game.name"))
+    categories = relationship(
+        'Category',
+        secondary='categories_games',
+        backref=backref('games', order_by='Game.name')
+    )
 
     # Many to One relationship
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship("User",
-        backref = backref("games"))
+    user = relationship('User', backref=backref('games'))
 
     @property
     def serialize(self):
