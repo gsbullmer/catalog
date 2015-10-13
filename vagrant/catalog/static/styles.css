@@ -24,3 +24,6 @@ body {
   -webkit-border-radius: 75px;
   -moz-border-radius: 75px;
 }
+.block-text {
+  white-space: pre-wrap;
+}
