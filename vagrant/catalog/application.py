@@ -198,26 +198,26 @@ def deleteGame(game_id):
         return render_template('deleteGame.html', game=game)
 
 
-# Making an API Endpoint (GET Request)
-@app.route('/api/categories/json')
+# API Endpoints (GET Request)
+@app.route('/api/categories')
 def categoriesJSON():
     categories = session.query(Category).all()
     return jsonify(Categories=[c.serialize for c in categories])
 
 
-@app.route('/api/category/<slug>/json')
+@app.route('/api/category/<slug>')
 def categoryJSON(slug):
     category = session.query(Category).filter_by(slug=slug).first()
     return jsonify(Category=[g.serialize for g in category.games])
 
 
-@app.route('/api/game/<int:game_id>/json')
+@app.route('/api/game/<int:game_id>')
 def gameJSON(game_id):
     game = session.query(Game).filter_by(id=game_id).first()
     return jsonify(Game=game.serialize)
 
 
-@app.route('/api/recent_games/rss')
+@app.route('/api/recent/rss')
 def recentGamesRSS():
     recent_games = session.query(Game).order_by('date_modified DESC').limit(10)
     rss = render_template('recentGames.xml', recent_games=recent_games)

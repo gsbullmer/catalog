@@ -32,7 +32,7 @@ class Category(Base):
 
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
-    slug = Column(String(80))
+    slug = Column(String(80), unique=True)
     description = Column(String(80))
 
     @property
