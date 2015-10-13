@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>IBGDb</title>
+    <atom:link href="http://localhost:8000/{{ url_for('recentGamesRSS') }}" rel="self" type="application/rss+xml" />
     <link>http://localhost:8000/</link>
     <description>Recently updated games</description>
     {% for g in recent_games %}
     <item>
       <title>{{ g.name }}</title>
-      <link>{{ url_for('showGameDetails', game_id = g.id) }}</link>
-      <guid>{{ url_for('showGameDetails', game_id = g.id) }}</guid>
+      <link>http://localhost:8000{{ url_for('showGameDetails', game_id = g.id) }}</link>
+      <guid>http://localhost:8000{{ url_for('showGameDetails', game_id = g.id) }}</guid>
       <pubDate>{{ g.date_modified.strftime("%a, %d %b %Y %H:%M:00 GMT") }}</pubDate>
       <description>{{ g.description }}</description>
     </item>
