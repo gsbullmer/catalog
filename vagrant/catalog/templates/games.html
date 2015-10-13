@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h4>{{ category.name }}</h4>
+  <div class="small-12 columns">
+    <h4>{{ category.name }}</h4>
 
-  {% if countGames(category.games) > 0 %}
+    {% if countGames(category.games) > 0 %}
 
-    <ul class="no-bullet">
+      <ul class="no-bullet">
 
-    {% for g in category.games %}
-      <li>
-        <a href="{{ url_for('showGameDetails', game_id = g.id)}}">{{ g.name }}</a>
-      </li>
-    {% endfor %}
+      {% for g in category.games %}
+        <li>
+          <a href="{{ url_for('showGameDetails', game_id = g.id)}}">{{ g.name }}</a>
+        </li>
+      {% endfor %}
 
-    </ul>
+      </ul>
 
-  {% else %}
-    <p>No games in this category.</p>
-  {% endif %}
+    {% else %}
+      <p>No games in this category.</p>
+    {% endif %}
 
-</div>
+  </div>
 
 {% endblock content %}

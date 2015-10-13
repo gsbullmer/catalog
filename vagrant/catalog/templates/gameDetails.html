@@ -1,56 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="row">
-    <div class="small-12 medium-8 columns">
-      <h4>{{ game.name }}</h4>
-      <p class="block-text">{{ game.description }}</p>
-    </div>
-    <div class="small-12 medium-4 columns">
-      {% if game.picture %}
-      <img src="{{ game.picture }}">
-      {% else %}
-      <img src="{{ url_for('static', filename = 'images/placeholder.jpg') }}">
-      {% endif %}
+  <div class="small-12 medium-8 columns">
+    <h4>{{ game.name }}</h4>
+    <p class="block-text">{{ game.description }}</p>
+  </div>
+  <div class="small-12 medium-4 columns">
+    {% if game.picture %}
+    <img src="{{ game.picture }}">
+    {% else %}
+    <img src="{{ url_for('static', filename = 'images/placeholder.jpg') }}">
+    {% endif %}
 
-      <br/>
-      <br/>
+    <br/>
+    <br/>
 
-      <i class="fi-torsos-all"></i> Players:
-      {% if game.min_players == game.max_players %}
-        {{ game.min_players }}
-      {% elif game.max_players == 0 %}
-        {{ game.min_players }}+
-      {% else %}
-        {{ game.min_players }} - {{ game.max_players }}
-      {% endif %}
+    <i class="fi-torsos-all"></i> Players:
+    {% if game.min_players == game.max_players %}
+      {{ game.min_players }}
+    {% elif game.max_players == 0 %}
+      {{ game.min_players }}+
+    {% else %}
+      {{ game.min_players }} - {{ game.max_players }}
+    {% endif %}
 
-      <br/>
-      <br/>
+    <br/>
+    <br/>
 
-      <i class="fi-results"></i> Categories:
-      <ul class="square">
-        {% for c in game.categories %}
-          <li><a href="{{ url_for('showGames', slug = c.slug) }}">{{ c.name }}</a></li>
-        {% endfor %}
+    <i class="fi-results"></i> Categories:
+    <ul class="square">
+      {% for c in game.categories %}
+        <li><a href="{{ url_for('showGames', slug = c.slug) }}">{{ c.name }}</a></li>
+      {% endfor %}
+    </ul>
+
+    {% if current_user.id == game.user_id %}
+      <ul class="stack button-group">
+        <li><a href="{{ url_for('editGame', game_id = game.id) }}" class="button small radius" data-reveal-id="formModal" data-reveal-ajax="true"><i class="fi-pencil"></i> Edit</a></li>
+        <li><a href="{{ url_for('deleteGame', game_id = game.id) }}" class="button small radius alert" data-reveal-id="deleteModal" data-reveal-ajax="true"><i class="fi-trash"></i> Delete</a></li>
       </ul>
-
-      {% if current_user.id == game.user_id %}
-        <ul class="stack button-group">
-          <li><a href="{{ url_for('editGame', game_id = game.id) }}" class="button small radius" data-reveal-id="formModal" data-reveal-ajax="true"><i class="fi-pencil"></i> Edit</a></li>
-          <li><a href="{{ url_for('deleteGame', game_id = game.id) }}" class="button small radius alert" data-reveal-id="deleteModal" data-reveal-ajax="true"><i class="fi-trash"></i> Delete</a></li>
-        </ul>
-      {% else %}
-        <i class="fi-torso"></i> Submitted by:
-        <br/>
-        {{ game.user.name }}
-      {% endif %}
-    </div>
+    {% else %}
+      <i class="fi-torso"></i> Submitted by:
+      <br/>
+      {{ game.user.name }}
+    {% endif %}
   </div>
 
 {% endblock content %}
-
-{% block footer_scripts %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/foundation/foundation.reveal.js') }}"></script>
-{% endblock footer_scripts %}
