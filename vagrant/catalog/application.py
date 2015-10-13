@@ -151,7 +151,7 @@ def editGame(game_id):
     if request.method == 'POST':
         for c in categories:
             if c in game.categories:
-                game.categories.remove()
+                game.categories.remove(c)
 
         game.name = request.form['name'],
         game.description = request.form['description'],
@@ -166,7 +166,7 @@ def editGame(game_id):
 
         session.add(game)
         session.commit()
-        flash('%s Created' % request.form['name'], 'success')
+        flash('%s updated!' % request.form['name'], 'success')
         return redirect(url_for('showGameDetails', game_id=game.id))
     else:
         return render_template(
