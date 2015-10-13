@@ -41,7 +41,7 @@ Vagrant is the software that configures the VM and lets you share files between 
 From the terminal, run:
 ```
 cd /folder/to/install/project
-git clone http://github.com/gsbullmer/catalog
+git clone https://github.com/gsbullmer/catalog.git
 ```
 This will give you a directory named **catalog**.
 
