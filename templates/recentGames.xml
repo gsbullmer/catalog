@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>IBGDb</title>
-    <atom:link href="http://localhost:8000/{{ url_for('recentGamesRSS') }}" rel="self" type="application/rss+xml" />
+    <atom:link href="http://http://ec2-52-32-196-18.us-west-2.compute.amazonaws.com/{{ url_for('recentGamesRSS') }}" rel="self" type="application/rss+xml" />
     <link>http://localhost:8000/</link>
     <description>Recently updated games</description>
     {% for g in recent_games %}
