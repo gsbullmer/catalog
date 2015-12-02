@@ -80,5 +80,5 @@ class Game(Base):
         }
 
 
-engine = create_engine('postgresql+psycopg2://ibgdb@/ibgdb')
+engine = create_engine('postgresql+psycopg2://ibgdb@127.0.0.1/ibgdb')
 Base.metadata.create_all(engine)
