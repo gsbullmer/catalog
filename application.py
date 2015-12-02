@@ -26,7 +26,7 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = 'IBGDb'
 
 # Create session and connect to DB
-engine = create_engine('postgresql:///ibgdb')
+engine = create_engine('postgresql+psycopg2://ibgdb@/ibgdb')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
