@@ -24,7 +24,7 @@ root = os.path.dirname(__file__)
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(
-    open(root + 'static/secrets/client_secrets.json',
+    open(root + '/static/secrets/client_secrets.json',
          'r').read())['web']['client_id']
 APPLICATION_NAME = 'IBGDb'
 
@@ -255,7 +255,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets(
-            root + 'static/secrets/client_secrets.json',
+            root + '/static/secrets/client_secrets.json',
             scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
@@ -377,9 +377,9 @@ def fbconnect():
         return response
     access_token = request.data
 
-    app_id = json.loads(open(root + 'static/secrets/fb_client_secrets.json',
+    app_id = json.loads(open(root + '/static/secrets/fb_client_secrets.json',
                              'r').read())['web']['app_id']
-    app_secret = json.loads(open(root + 'static/secrets/fb_client_secrets.json',
+    app_secret = json.loads(open(root + '/static/secrets/fb_client_secrets.json',
                                  'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?\
         grant_type=fb_exchange_token&client_id=%s&client_secret=%s&\
