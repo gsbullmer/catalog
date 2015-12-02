@@ -80,5 +80,5 @@ class Game(Base):
         }
 
 
-engine = create_engine('postgresql:///catalog')
+engine = create_engine('postgresql:///ibgdb')
 Base.metadata.create_all(engine)
