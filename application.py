@@ -390,6 +390,7 @@ def fbconnect():
         fb_exchange_token=%s' % (app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
+    print result
 
     userinfo_url = 'https://graph.facebook.com/v2.4/me'
     token = result.split('&')[0]
