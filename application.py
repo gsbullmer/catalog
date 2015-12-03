@@ -20,7 +20,7 @@ from flask import make_response
 
 import os
 root = os.path.dirname(__file__)
-print root
+print >> environ['wsgi.errors'], root
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(
@@ -118,7 +118,7 @@ def newGame():
             user=getUserInfo(login_session['user_id']))
 
         for c in request.form.getlist('category'):
-            print c
+            print >> environ['wsgi.errors'], c
             newGame.categories.append(getCategory(c))
 
         session.add(newGame)
@@ -164,7 +164,7 @@ def editGame(game_id):
         game.date_modified = datetime.now()
 
         for c in request.form.getlist('category'):
-            print c
+            print >> environ['wsgi.errors'], c
             game.categories.append(getCategory(c))
 
         session.add(game)
@@ -290,7 +290,7 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(json.dumps(
             "Token's client ID doesn't match app's ID."), 401)
-        print "Token's client ID doesn't match app's ID."
+        print >> environ['wsgi.errors'], "Token's client ID doesn't match app's ID."
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -339,7 +339,7 @@ def gconnect():
     output += '</div>'
     flash('Successfully logged in as %s.' % login_session['username'],
           'success')
-    print 'done!'
+    print >> environ['wsgi.errors'], 'done!'
     return output
 
 
@@ -430,7 +430,7 @@ def fbconnect():
     output += '</div>'
     flash('Successfully logged in as %s.' % login_session['username'],
           'success')
-    print 'done!'
+    print >> environ['wsgi.errors'], 'done!'
     return output
 
 
