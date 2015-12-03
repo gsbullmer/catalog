@@ -22,7 +22,10 @@ import os
 root = os.path.dirname(__file__)
 print >> environ['wsgi.errors'], root
 app = Flask(__name__)
-app.config['DEBUG'] = True
+app.config.update(
+    DEBUG=True,
+    SECRET_KEY='Super secret key'
+)
 
 CLIENT_ID = json.loads(
     open(root + '/static/secrets/client_secrets.json',
