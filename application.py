@@ -21,7 +21,7 @@ from flask import make_response
 import os
 root = os.path.dirname(__file__)
 print >> environ['wsgi.errors'], root
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path=root + '/static')
 app.config.update(
     DEBUG=True,
     SECRET_KEY='Super secret key'
