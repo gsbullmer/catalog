@@ -25,7 +25,7 @@ app.config.update(
 )
 
 CLIENT_ID = json.loads(
-    open('static/secrets/client_secrets.json',
+    open('./static/secrets/client_secrets.json',
          'r').read())['web']['client_id']
 APPLICATION_NAME = 'IBGDb'
 
