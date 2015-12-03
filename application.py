@@ -20,7 +20,7 @@ from flask import make_response
 
 import os
 root = os.path.dirname(__file__)
-
+print root
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(
