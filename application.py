@@ -387,17 +387,17 @@ def fbconnect():
     app_secret = json.loads(
         open(root + '/static/secrets/fb_client_secrets.json',
              'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?\
-        grant_type=fb_exchange_token&client_id=%s&client_secret=%s&\
-        fb_exchange_token=%s' % (app_id, app_secret, access_token)
+    url = ('https://graph.facebook.com/oauth/access_token?'
+           'grant_type=fb_exchange_token&client_id=%s&client_secret=%s&'
+           'fb_exchange_token=%s') % (app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
     userinfo_url = 'https://graph.facebook.com/v2.4/me'
     token = result.split('&')[0]
 
-    url = 'https://graph.facebook.com/v2.4/me?\
-        %s&fields=name,id,email' % token
+    url = ('https://graph.facebook.com/v2.4/me?'
+           '%s&fields=name,id,email') % token
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -409,8 +409,8 @@ def fbconnect():
     login_session['email'] = data['email']
     login_session['facebook_id'] = data['id']
 
-    url = 'https://graph.facebook.com/v2.4/me/picture?\
-        %s&redirect=0&height=200&width=200' % token
+    url = ('https://graph.facebook.com/v2.4/me/picture?'
+           '%s&redirect=0&height=200&width=200') % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
