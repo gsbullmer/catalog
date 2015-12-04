@@ -401,6 +401,7 @@ def fbconnect():
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
+    print result
 
     data = json.loads(result)
     login_session['provider'] = 'facebook'
