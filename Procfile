@@ -1,1 +1,1 @@
-web: gunicorn ibgdb --log-file -
+web: gunicorn application:app
