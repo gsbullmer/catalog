@@ -68,6 +68,6 @@ def addCategories():
 
 addCategories()
 
-print 'Categories Initialized!'
+print('Categories Initialized!')
 
 s.close()

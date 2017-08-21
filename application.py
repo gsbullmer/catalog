@@ -20,7 +20,7 @@ from flask import make_response
 
 import os
 root = os.path.dirname(__file__)
-print root
+print(root)
 app = Flask(__name__)
 app.config.update(
     DEBUG=True,
@@ -122,7 +122,7 @@ def newGame():
             user=getUserInfo(login_session['user_id']))
 
         for c in request.form.getlist('category'):
-            print c
+            print(c)
             newGame.categories.append(getCategory(c))
 
         session.add(newGame)
@@ -168,7 +168,7 @@ def editGame(game_id):
         game.date_modified = datetime.now()
 
         for c in request.form.getlist('category'):
-            print c
+            print(c)
             game.categories.append(getCategory(c))
 
         session.add(game)
@@ -238,7 +238,7 @@ def recentGamesRSS():
 @app.route('/login/')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
+                    for x in range(33))
     login_session['state'] = state
     return render_template(
         'login.html',
@@ -294,7 +294,7 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(json.dumps(
             "Token's client ID doesn't match app's ID."), 401)
-        print "Token's client ID doesn't match app's ID."
+        print("Token's client ID doesn't match app's ID.")
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -343,7 +343,7 @@ def gconnect():
     output += '</div>'
     flash('Successfully logged in as %s.' % login_session['username'],
           'success')
-    print 'done!'
+    print('done!')
     return output
 
 
@@ -401,7 +401,7 @@ def fbconnect():
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    print result
+    print(result)
 
     data = json.loads(result)
     login_session['provider'] = 'facebook'
@@ -437,7 +437,7 @@ def fbconnect():
     output += '</div>'
     flash('Successfully logged in as %s.' % login_session['username'],
           'success')
-    print 'done!'
+    print('done!')
     return output
 
 
