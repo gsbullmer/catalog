@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from database_setup import Category, Base
 
-engine = create_engine('postgresql+psycopg2://ibgdb@/ibgdb')
+engine = create_engine('postgresql+psycopg2://wwvsdvrrpoawss:930e9a17fc3edabe75b9f3fd48f50e3f2f66c483529d015b6e7f9f4374077df8@ec2-54-83-25-217.compute-1.amazonaws.com:5432/d8enjv9dnkdk2n')
 
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
